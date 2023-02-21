@@ -4,6 +4,7 @@ function goss() {
 }
 
 @test "Invoking dgoss without GOSS_PATH prints an error" {
+    bats_require_minimum_version 1.5.0
     unset GOSS_PATH
 
     run -1 ../dgoss
@@ -11,6 +12,7 @@ function goss() {
 }
 
 @test "Invoking dgoss without arguments prints the usage" {
+    bats_require_minimum_version 1.5.0
     export GOSS_PATH="goss"
 
     # make goss stub available to subshells
@@ -24,6 +26,7 @@ function goss() {
 }
 
 @test "Invoking dgoss with a container runtime different from docker or podman prints an error" {
+    bats_require_minimum_version 1.5.0
     export  GOSS_PATH="goss"
     export  CONTAINER_RUNTIME="test"
     export -f goss
