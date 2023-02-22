@@ -15,7 +15,7 @@ function docker() {
     if [[ $1 == "build" && "$*" == *docker-image-fail* ]]; then
         exit 1
     fi
-    if [[ $1 == "run" && "$*" == "image cmd" ]]; then
+    if [[ $1 == "run" && "${@:5}" == "image cmd" ]]; then
         echo "$CONTAINER_ID" # container id
     fi
     if [[ $1 == "cp" ]]; then
