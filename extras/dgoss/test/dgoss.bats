@@ -26,6 +26,15 @@ function docker() {
     fi
 }
 
+teardown() {
+    for file in "goss" "goss.yaml" "goss_wait.yaml"; do
+        echo $file
+        if [[ -f $file ]]; then
+            rm $file
+        fi
+    done
+}
+
 @test "Invoking dgoss without GOSS_PATH prints an error" {
     bats_require_minimum_version 1.5.0
     unset GOSS_PATH
@@ -77,9 +86,6 @@ function docker() {
     [ "${lines[3]}" = "INFO: Container health" ]
     [ "${lines[4]}" = "INFO: Running Tests" ]
     [ "${lines[5]}" = "INFO: Deleting container" ]
-
-    # cleanup
-    rm goss
 }
 
 @test "Invoking dgoss without a valid command prints the usage" {
@@ -95,9 +101,6 @@ function docker() {
     run -1 ../dgoss test
 
     [ "$output" = "ERROR: USAGE: dgoss [run|edit] <docker_run_params>" ]
-
-    # cleanup
-    rm goss
 }
 
 @test "Invoking dgoss edit <img> <cmd> starts the container and copy the file from it" {
@@ -118,9 +121,4 @@ function docker() {
     [ "${lines[3]}" = "INFO: Copied '/goss/goss.yaml' from container to './goss.yaml'" ]
     [ "${lines[4]}" = "INFO: Copied '/goss/goss_wait.yaml' from container to './goss_wait.yaml'" ]
     [ "${lines[5]}" = "INFO: Deleting container" ]
-
-    # cleanup
-    rm goss
-    rm goss.yaml
-    rm goss_wait.yaml
 }
