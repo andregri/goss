@@ -56,7 +56,7 @@ function docker() {
     [ "$output" = "ERROR: Runtime must be one of docker or podman" ]
 }
 
-@test "Invoking dgoss run <image> <cmd> should start the container, run tests, and delete the container" {
+@test "Invoking dgoss run <image> <cmd> starts the container, run tests, and delete the container" {
     bats_require_minimum_version 1.5.0
 
     export GOSS_PATH="goss"
@@ -74,6 +74,24 @@ function docker() {
     [ "${lines[3]}" = "INFO: Container health" ]
     [ "${lines[4]}" = "INFO: Running Tests" ]
     [ "${lines[5]}" = "INFO: Deleting container" ]
+
+    # cleanup
+    rm goss
+}
+
+@test "Invoking dgoss without a valid command prints the usage" {
+    bats_require_minimum_version 1.5.0
+
+    export GOSS_PATH="goss"
+    export -f goss
+    touch goss # to pass cp command
+
+    export CONTAINER_RUNTIME="docker"
+    export -f docker
+
+    run -1 ../dgoss test
+
+    [ "$output" = "ERROR: USAGE: dgoss [run|edit] <docker_run_params>" ]
 
     # cleanup
     rm goss
