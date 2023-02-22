@@ -18,19 +18,7 @@ function docker() {
     if [[ $1 == "run" && "${@:5}" == "image cmd" ]]; then
         echo "$CONTAINER_ID" # container id
     fi
-    if [[ $1 == "cp" ]]; then
-        exit 0
-    fi
-    if [[ $1 == "start" ]]; then
-        exit 0
-    fi
-    if [[ $1 == "create" ]]; then
-        exit 0
-    fi
-    if [[ $1 == "logs" ]]; then
-        exit 0
-    fi
-    if [[ "$*" == "inspect -f '{{.State.Running}}" ]]; then
+    if [[ "$*" == "inspect -f {{.State.Running}} ${CONTAINER_ID}" ]]; then
         echo true
     fi
 }
@@ -68,7 +56,7 @@ function docker() {
     [ "$output" = "ERROR: Runtime must be one of docker or podman" ]
 }
 
-@test "Invoking dgoss run ... (TODO)" {
+@test "Invoking dgoss run <image> <cmd> should start the container, run tests, and delete the container" {
     bats_require_minimum_version 1.5.0
 
     export GOSS_PATH="goss"
@@ -81,6 +69,11 @@ function docker() {
     run -0 ../dgoss run image cmd
 
     [ "${lines[0]}" = "INFO: Starting docker container" ]
+    [ "${lines[1]}" = "INFO: Container ID: 1234" ]
+    [ "${lines[2]}" = "INFO: Sleeping for 0.2" ]
+    [ "${lines[3]}" = "INFO: Container health" ]
+    [ "${lines[4]}" = "INFO: Running Tests" ]
+    [ "${lines[5]}" = "INFO: Deleting container" ]
 
     # cleanup
     rm goss
