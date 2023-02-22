@@ -27,10 +27,10 @@ function goss() {
 
 @test "Invoking dgoss with a container runtime different from docker or podman prints an error" {
     bats_require_minimum_version 1.5.0
-    export  GOSS_PATH="goss"
-    export  CONTAINER_RUNTIME="test"
+    export GOSS_PATH="goss"
+    export CONTAINER_RUNTIME="test"
     export -f goss
-    
+
     run -1 ../dgoss test
 
     [ "$output" = "ERROR: Runtime must be one of docker or podman" ]
